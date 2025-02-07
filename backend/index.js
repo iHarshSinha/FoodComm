@@ -7,6 +7,7 @@ let mongoose = require('mongoose');
 let adminRoutes = require("./routes/admin")
 let app = express();
 app.use(express.urlencoded({extended:true}))
+app.use(express.json())
 
 
 
