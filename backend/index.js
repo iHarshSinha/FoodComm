@@ -2,6 +2,7 @@ if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 let express = require('express');
+let ExpressError = require("./utils/ExpressError")
 let mongoose = require('mongoose');
 let adminRoutes = require("./routes/admin")
 let app = express();
@@ -22,6 +23,21 @@ const port = process.env.BACKEND_PORT || 5000;
 
 
 app.use("/admin",adminRoutes)
+
+app.all("*",(req,res,next)=>{
+    next(new ExpressError("Page Not Found",404))
+})
+
+app.use((err,req,res,next)=>{
+    console.log("in error route")
+    // let {status=500,message="something went wrong"}=err;
+    let {status=500}=err;
+    if(!err.message){
+        err.message="Something went Wrong"
+    }
+    // res.status(status).render("error",{err})
+    res.status(status).json({error:err.message})
+})
 
 
 app.listen(port, () => {
