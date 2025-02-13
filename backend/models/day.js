@@ -3,7 +3,7 @@ let Schema = mongoose.Schema;
 let Meal = require("./meal");
 let daySchema = new Schema({
   dates: {
-    type: [String],
+    type: [Date],
     required: true
   },
   meals: [{

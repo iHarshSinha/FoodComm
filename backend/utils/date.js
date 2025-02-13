@@ -19,4 +19,5 @@ function convertToDate(dateStr) {
     const formattedDate = `20${year}-${formattedMonth}-${formattedDay}`; // Format as YYYY-MM-DD
     return new Date(formattedDate); // Create a JavaScript Date object
 }
+
 module.exports = convertToDate;

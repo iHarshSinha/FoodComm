@@ -5,6 +5,7 @@ let express = require('express');
 let ExpressError = require("./utils/ExpressError")
 let mongoose = require('mongoose');
 let adminRoutes = require("./routes/admin")
+let userRoutes = require("./routes/user")
 let app = express();
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
@@ -24,6 +25,7 @@ const port = process.env.BACKEND_PORT || 5000;
 
 
 app.use("/admin",adminRoutes)
+app.use("/user",userRoutes)
 
 app.all("*",(req,res,next)=>{
     next(new ExpressError("Page Not Found",404))

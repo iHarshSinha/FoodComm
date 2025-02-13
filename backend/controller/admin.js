@@ -7,6 +7,7 @@ let Day = require("../models/day")
 let Menu = require("../models/menu")
 let multer = require("multer")
 let upload = multer({ storage })
+let yyyymmdd=require("../utils/yyyymmdd")
 
 module.exports.createMenu = async (req, res, next) => {
 
@@ -27,10 +28,7 @@ module.exports.createMenu = async (req, res, next) => {
     const daysArray = [];
     for (const [dayName, dayData] of Object.entries(menuData)) {
         // Convert dates
-        const dates = dayData.dates.map(date => {
-            const convertedDate = convertToDate(date);
-            return date;
-        });
+        const dates = dayData.dates.map(date => convertToDate(date));
 
         // Process meals for the day
         const mealDocuments = [];
@@ -83,11 +81,11 @@ module.exports.createMenu = async (req, res, next) => {
     // res.json(parsedData);
 
 }
-module.exports.getMenu = async (req, res, next) => {
-    // we will see the current date and then get the menu whose start date is before current date and end date is after current date
-    // this will be a static method in the Menu model
-    let menu = await Menu.getThisWeekMenu();
-    // now we will send json response
-    console.log(menu);
-    res.json(menu);
+module.exports.createFeast = async (req, res, next) => {
+    let { date, meal } = req.body;
+    let feastDate = yyyymmdd(date);
+    // now we will make the meal object
+    // first lets get the menu which is active on this date
+    // then we will get the day object which has this date
+    
 }

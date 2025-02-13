@@ -5,7 +5,7 @@ let AdminMethods=require("../controller/admin")
 let upload=require("../cloudinary/uploadMiddleware")
 
 router.post("/menu",upload,wrapForError(AdminMethods.createMenu))
-router.get("/menu",wrapForError(AdminMethods.getMenu))
+router.post("/feast",wrapForError(AdminMethods.createFeast))
 
 
 module.exports=router
