@@ -2,6 +2,7 @@ if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 let express = require('express');
+let methodOverride=require("method-override")
 let ExpressError = require("./utils/ExpressError")
 let mongoose = require('mongoose');
 let adminRoutes = require("./routes/admin")
@@ -9,6 +10,7 @@ let userRoutes = require("./routes/user")
 let app = express();
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+app.use(methodOverride("_method"))
 
 
 

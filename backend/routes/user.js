@@ -7,5 +7,6 @@ let middleware=require("../middleware")
 
 router.get("/menu",wrapForError(UserMethods.getMenu))
 router.post("/sick",middleware.validateSickMeal,wrapForError(UserMethods.sick))
+router.put("/rating/:id",wrapForError(UserMethods.updateRating))
 
 module.exports=router

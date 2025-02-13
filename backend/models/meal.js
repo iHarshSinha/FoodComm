@@ -11,7 +11,18 @@ let mealSchema=new Schema({
     items:[{
         type:Schema.Types.ObjectId,
         ref:"Item"
-    }]
+    }],
+    // now there will be a property known as isFeast which will be true if the meal is feast and will also contain the date of the feast but the date will be in string format dd three letter month and yy
+    isFeast: {
+        status: {
+            type: Boolean,
+            default: false
+        },
+        date: {
+            type: String,
+            default: "" // Format: dd three-letter month yy (e.g., "12 Jan 25")
+        }
+    }
 })
 let Meal=mongoose.model("Meal",mealSchema)
 module.exports=Meal

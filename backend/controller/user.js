@@ -1,4 +1,8 @@
 let Menu=require("../models/menu")
+let Meal=require("../models/meal")
+let Item=require("../models/item")
+let mongoose = require("mongoose")
+let ExpressError = require("../utils/ExpressError");
 let twilio = require('twilio');
 let client = new twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 module.exports.getMenu = async (req, res, next) => {
@@ -34,4 +38,30 @@ module.exports.sick = async (req, res, next) => {
     });
     console.log(sendMessage.sid);
     return res.json({message:"Sick Meal Request Sent"});   
+}
+module.exports.updateRating = async (req, res, next) => {
+    
+    let mealId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(mealId)) {
+        return next(new ExpressError("Invalid Meal Id", 400));
+    }
+    let CurrentMeal = await Meal.findById(mealId);
+    // now in body we have rating as an array of objects with item id and rating of those individual items
+    let { rating } = req.body;
+    if(!rating){
+        return next(new ExpressError("Rating is required", 400));
+    }
+    for (let rate of rating) {
+        // check for valid item id
+        if (!mongoose.Types.ObjectId.isValid(rate.itemId)) {
+            return next(new ExpressError("Invalid Item Id", 400));
+        }
+        let item = await Item.findById(rate.itemId);
+        if (!item) {
+            return next(new ExpressError("Invalid Item Id", 400));
+        }
+        // here we will call  that method which will update the rating and the number of user
+        await item.updateRating(rate.rating);
+        res.json({ message: "Rating Updated" });
+    }
 }

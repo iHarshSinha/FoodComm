@@ -17,7 +17,8 @@ module.exports.createMenu = async (req, res, next) => {
     const menuData = processExcelData(worksheet);
     console.log(menuData);
 
-
+    console.log(menuData['MONDAY'].dates[0])
+    console.log(menuData['SUNDAY'].dates[1])
     const startDate = convertToDate(menuData['MONDAY'].dates[0]);
     startDate.setHours(0, 0, 0, 0); // Set to start of day
 
