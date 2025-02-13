@@ -24,5 +24,11 @@ let mealSchema=new Schema({
         }
     }
 })
+
+// we will create a method which will return the item stored in this meal and we will pass the id here
+mealSchema.methods.getItem=function(id){
+    let item = this.items.find(item => item._id.toString() === id.toString());
+    return item ? item : null;
+}
 let Meal=mongoose.model("Meal",mealSchema)
 module.exports=Meal

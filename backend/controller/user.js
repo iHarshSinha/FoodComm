@@ -45,23 +45,27 @@ module.exports.updateRating = async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(mealId)) {
         return next(new ExpressError("Invalid Meal Id", 400));
     }
-    let CurrentMeal = await Meal.findById(mealId);
+    let CurrentMeal = await Meal.findById(mealId).populate("items");
     // now in body we have rating as an array of objects with item id and rating of those individual items
     let { rating } = req.body;
     if(!rating){
         return next(new ExpressError("Rating is required", 400));
     }
+    console.log(rating);
     for (let rate of rating) {
+        console.log("loop");
         // check for valid item id
         if (!mongoose.Types.ObjectId.isValid(rate.itemId)) {
             return next(new ExpressError("Invalid Item Id", 400));
         }
-        let item = await Item.findById(rate.itemId);
+        let item = await CurrentMeal.getItem(rate.itemId);
+        console.log(item);
         if (!item) {
             return next(new ExpressError("Invalid Item Id", 400));
         }
         // here we will call  that method which will update the rating and the number of user
         await item.updateRating(rate.rating);
-        res.json({ message: "Rating Updated" });
+        
     }
+    return res.json({ message: "Rating Updated" });
 }
