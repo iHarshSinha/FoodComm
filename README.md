@@ -1,1 +1,2 @@
-now one can send a put request to /user/rating/mealId to rate the items that are there in this meal
+One can send post request to /admin/feast to create a feast
+One can send get request to /user/feast to get the feast items
