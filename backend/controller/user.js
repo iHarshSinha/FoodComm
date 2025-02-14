@@ -1,11 +1,16 @@
 let Menu=require("../models/menu")
 let Meal=require("../models/meal")
 let Item=require("../models/item")
+
 let mongoose = require("mongoose")
 let ExpressError = require("../utils/ExpressError");
 let twilio = require('twilio');
+let { cloudinary, storage } = require("../cloudinary/index")
+let multer = require("multer")
+let upload = multer({ storage })
 let Feast = require("../models/feast");
 let validateDateFormat = require("../utils/validateDateFormat");
+let Review = require("../models/review");
 let client = new twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 module.exports.getMenu = async (req, res, next) => {
     // we will see the current date and then get the menu whose start date is before current date and end date is after current date
@@ -89,4 +94,24 @@ module.exports.getFeast = async (req, res, next) => {
         return next(new ExpressError("No feast found",404));
     }
     return res.json(feast);
+}
+
+module.exports.addReview = async (req, res, next) => {
+    // now we will get image from path
+    // we will upload the image to cloudinary
+    // we will get the secure url of the image
+    // we will save the review with this secure url
+    let {rating,feedback}=req.body;
+    let image=req.file.path;
+    let secureUrl=await cloudinary.uploader.upload(image);
+    // date will be current date
+    let review=new Review({
+        date:new Date(),
+        rating,
+        feedback,
+        image:secureUrl.secure_url
+    });
+    await review.save();
+    return res.json({message:"Review Added"});
+
 }
