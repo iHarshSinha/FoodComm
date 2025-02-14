@@ -2,12 +2,16 @@ let { processExcelData, parseExcelFromUrl } = require("../utils/parseExcel")
 let { cloudinary, storage } = require("../cloudinary/index")
 let convertToDate = require("../utils/date")
 let Item = require("../models/item")
+let ExpressError = require("../utils/ExpressError")
 let Meal = require("../models/meal")
 let Day = require("../models/day")
 let Menu = require("../models/menu")
+let Feasts = require("../models/feast")
 let multer = require("multer")
 let upload = multer({ storage })
-let yyyymmdd=require("../utils/yyyymmdd")
+let yyyymmdd = require("../utils/yyyymmdd")
+
+let validateDateFormat=require("../utils/validateDateFormat")
 
 module.exports.createMenu = async (req, res, next) => {
 
@@ -83,10 +87,51 @@ module.exports.createMenu = async (req, res, next) => {
 
 }
 module.exports.createFeast = async (req, res, next) => {
-    let { date, meal } = req.body;
-    let feastDate = yyyymmdd(date);
-    // now we will make the meal object
-    // first lets get the menu which is active on this date
-    // then we will get the day object which has this date
-    
+    let { date, meal, items } = req.body;
+    if (!date || !meal) {
+        return next(new ExpressError("Date and meal are required", 400));
+    }
+    // now date must be in the form of dd three letter month and yy
+    if(!validateDateFormat(date)){
+        return next(new ExpressError("Invalid date format", 400));
+    }
+
+    let feastDate = convertToDate(date);
+    if (meal != "breakfast" && meal != "lunch" && meal != "snacks" && meal != "dinner") {
+        return next(new ExpressError("Invalid meal type", 400));
+    }
+    if (!items || items.length == 0) {
+        return next(new ExpressError("Items are required", 400));
+    }
+
+    // now we will find the date which has this date in the dates array
+    let day = await Day.findOne({ dates: feastDate }).populate("meals");
+    // console.log(day._id);
+    if (day) {
+        console.log(day);
+        // now we will get that meal
+        let feastMeal = day.meals.find(m => m.name === meal);
+        console.log(feastMeal);
+        if (feastMeal) {
+            feastMeal.isFeast.status = true;
+            feastMeal.isFeast.date = date;
+            await feastMeal.save();
+        }
+    }
+    // for each feast the tuple meal and date is unique
+    // we should check that if the feast with this meal and date already exists
+    // if yes then we will send that feast already exists
+    let findFeast = await Feasts.findOne({ name: meal, date: date });
+    if (findFeast) {
+        return next(new ExpressError("Feast already exists", 400));
+    }
+    let feast = new Feasts({
+        name: meal,
+        date: date,
+        items: items
+    });
+    await feast.save();
+    return res.json({ message: "Feast created successfully" });
 }
+
+

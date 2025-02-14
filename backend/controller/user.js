@@ -4,6 +4,8 @@ let Item=require("../models/item")
 let mongoose = require("mongoose")
 let ExpressError = require("../utils/ExpressError");
 let twilio = require('twilio');
+let Feast = require("../models/feast");
+let validateDateFormat = require("../utils/validateDateFormat");
 let client = new twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 module.exports.getMenu = async (req, res, next) => {
     // we will see the current date and then get the menu whose start date is before current date and end date is after current date
@@ -68,4 +70,23 @@ module.exports.updateRating = async (req, res, next) => {
         
     }
     return res.json({ message: "Rating Updated" });
+}
+module.exports.getFeast = async (req, res, next) => {
+    let {date,meal}=req.query;
+    if(!date || !meal){
+        return next(new ExpressError("Date and meal are required",400));
+    }
+    // now date must be in the form of dd three letter month and yy
+    if(!validateDateFormat(date)){
+        return next(new ExpressError("Invalid date format",400));
+    }
+    // meal must be breakfast,lunch,snacks or dinner
+    if(meal!="breakfast" && meal!="lunch" && meal!="snacks" && meal!="dinner"){
+        return next(new ExpressError("Invalid meal",400));
+    }
+    let feast=await Feast.findOne({date:date,name:meal});
+    if(!feast){
+        return next(new ExpressError("No feast found",404));
+    }
+    return res.json(feast);
 }
