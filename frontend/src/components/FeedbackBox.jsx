@@ -41,7 +41,8 @@ const FeedbackBox = ({ submitFeedback }) => {
       // submittedAt: formattedDate,
       file: image
     }
-  
+    
+    console.log(feedbackData)
     submitFeedback(feedbackData)
     toast.success('Feedback submitted successfully!')
     
