@@ -47,7 +47,7 @@ const FeedbackBox = ({ submitFeedback }) => {
     
     console.log(formData)
     try {
-      const result = await submitFeedback(feedbackData)
+      const result = await submitFeedback(formData)
       if(!result){
         toast.error('Failed to submit feedback. Please try again.');
         return;
