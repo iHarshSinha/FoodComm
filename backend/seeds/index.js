@@ -16,6 +16,7 @@ let Meal = require("../models/meal")
 let Day = require("../models/day")
 let Menu = require("../models/menu")
 let Feast = require("../models/feast")
+let Review = require("../models/review")
 
 //utils
 let convertToDate = require("../utils/date")
@@ -36,7 +37,8 @@ let seedData = async () => {
         Day.deleteMany({}),
         Meal.deleteMany({}),
         Item.deleteMany({}),
-        Feast.deleteMany({})
+        Feast.deleteMany({}),
+        Review.deleteMany({})
     ]);
     // console.log('Database cleaned successfully');
 
