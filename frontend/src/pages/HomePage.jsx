@@ -18,7 +18,12 @@ const submitFeedback = async (feedbackData) => {
     body: JSON.stringify(feedbackData),
   })
 
-  return;
+  if(!response.ok) {
+    console.error('Failed to submit feedback!')
+  }
+
+  const data = await response.json();
+  return data;
 }
 
 const HomePage = () => {

@@ -29,29 +29,28 @@ const FeedbackBox = ({ submitFeedback }) => {
   
 
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    // const today = new Date()
-    // const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`
     
     const feedbackData = {
       rating: rating,
       feedback: feedback,
-      // submittedAt: formattedDate,
       file: image
     }
     
-    console.log(feedbackData)
-    submitFeedback(feedbackData)
-    toast.success('Feedback submitted successfully!')
-    
-    // Reset form
-    setRating(0)
-    setFeedback('')
-    setImage(null)
-    setPreviewUrl('')
-    setIsOpen(false)
+    try {
+      await submitFeedback(feedbackData)
+      toast.success('Feedback submitted successfully!')
+      
+      // Reset form
+      setRating(0)
+      setFeedback('')
+      setImage(null)
+      setPreviewUrl('')
+      setIsOpen(false)
+    } catch (error) {
+      toast.error('Failed to submit feedback. Please try again.')
+    }
   }
   
   
