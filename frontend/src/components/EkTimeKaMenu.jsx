@@ -61,60 +61,25 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID }) => {
       }));
   
     console.log("Valid Ratings to Submit:", validRatings);
+    
+    try {
+      const response = await fetch(`/api/user/ratings/${mealID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(validRatings)
+      });
       
-    for (const validRating of validRatings) {
-      try {
-        const response = await fetch(`/api/rating/${mealID}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        
-        if (data.length > 0) {
-          const existingRating = data.find((item) => item.itemId === validRating.itemId);
-          if (existingRating) {
-            const updateResponse = await fetch(`/api/rating/${mealID}/${existingRating.id}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ 
-                itemId: validRating.itemId,
-                rating: validRating.rating 
-              }),
-            });
-  
-            if (updateResponse.ok) {
-              console.log(`Rating updated for itemId: ${validRating.itemId}`);
-            } else {
-              console.error(`Failed to update rating for itemId: ${validRating.itemId}`);
-            }
-          }
-        } else {
-          const addResponse = await fetch(`/api/rating/${mealID}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              itemId: validRating.itemId,
-              rating: validRating.rating
-            }),
-          });
-  
-          if (addResponse.ok) {
-            console.log(`New rating added for itemId: ${validRating.itemId}`);
-          } else {
-            console.error(`Failed to add rating for itemId: ${validRating.itemId}`);
-          }
-        }
-      } catch (error) {
-        console.error("Error submitting rating:", error);
+      if (!response.ok) {
+        throw new Error('Failed to submit ratings');
       }
+      
+      console.log("Ratings submitted successfully");
+    } catch (error) {
+      console.error("Error submitting ratings:", error);
     }
-  
+  }  
     toast.success("Ratings submitted successfully!");
     setRatings({});
     setCanRate(false);
