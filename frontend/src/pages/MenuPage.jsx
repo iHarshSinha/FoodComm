@@ -1,0 +1,63 @@
+import React, { useState } from 'react'
+import EkDinKaMenu from '../components/EkDinKaMenu'
+import { useTheme } from '../context/ThemeContext'
+
+const MenuPage = () => {
+  const [currentDay, setCurrentDay] = useState(0)
+  const { darkMode } = useTheme();
+  
+  const handlePrevDay = () => {
+    setCurrentDay(prev => Math.max(0, prev - 1))
+  }
+
+  const handleNextDay = () => {
+    setCurrentDay(prev => Math.min(6, prev + 1))
+  }
+
+  const getFormattedDate = (dayOffset) => {
+    const today = new Date()
+    const currentDayNum = today.getDay()
+    const mondayOffset = currentDayNum === 0 ? -6 : 1 - currentDayNum
+    const targetDate = new Date(today)
+    targetDate.setDate(today.getDate() + mondayOffset + dayOffset)
+    
+    return targetDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <button 
+            onClick={handlePrevDay}
+            disabled={currentDay === 0}
+            className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg disabled:bg-gray-300 dark:disabled:bg-gray-600 transition-colors"
+          >
+            Previous Day
+          </button>
+          
+          <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
+            {getFormattedDate(currentDay)}
+          </h2>
+          
+          <button 
+            onClick={handleNextDay}
+            disabled={currentDay === 6}
+            className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg disabled:bg-gray-300 dark:disabled:bg-gray-600 transition-colors"
+          >
+            Next Day
+          </button>
+        </div>
+
+        <EkDinKaMenu day={currentDay} isHome={false} />
+      </div>
+    </div>
+  )
+}
+
+export default MenuPage
