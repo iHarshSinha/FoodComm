@@ -63,7 +63,7 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID }) => {
     console.log("Valid Ratings to Submit:", validRatings);
     
     try {
-      const response = await fetch(`/api/user/ratings/${mealID}`, {
+      const response = await fetch(`/api/user/rating/${mealID}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
