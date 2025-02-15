@@ -8,10 +8,12 @@ import FeedbackBox from '../components/FeedbackBox'
 
 // submit feedback
 const submitFeedback = async (feedbackData) => {
+  // check server response
   const response = await fetch('/api/user/review', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'enctype': 'multipart/form-data'
     },
     body: JSON.stringify(feedbackData),
   })
