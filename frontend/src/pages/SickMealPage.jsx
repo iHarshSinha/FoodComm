@@ -11,14 +11,15 @@ const submitFeedback = async (feedbackData) => {
   // check server response
   const response = await fetch('/api/user/review', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'enctype': 'multipart/form-data'
-    },
-    body: JSON.stringify(feedbackData),
+    body: feedbackData
   })
 
-  return;
+  if (!response.ok) {
+    return false
+  }
+
+  return true
+
 }
 
 const SickMealPage = () => {

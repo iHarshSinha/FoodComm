@@ -45,6 +45,7 @@ const FeedbackBox = ({ submitFeedback }) => {
       formData.append('file', image) // Append file instead of Base64
     }
     
+    console.log(formData)
     try {
       const result = await submitFeedback(feedbackData)
       if(!result){
