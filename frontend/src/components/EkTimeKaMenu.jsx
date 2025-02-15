@@ -53,14 +53,14 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID }) => {
   }
 
   const submitRatings = async () => {
-    const validRatings = Object.entries(ratings)
+    const Rating = Object.entries(ratings)
       .filter(([_, rating]) => rating > 0)
       .map(([index, rating]) => ({
         itemId: itemIDs[index],
         rating: rating,
       }));
 
-    console.log("Valid Ratings to Submit:", validRatings);
+    console.log("Valid Ratings to Submit:", Rating);
     
     try {
       const response = await fetch(`/api/user/rating/${mealID}`, {
@@ -68,7 +68,7 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(validRatings)
+        body: JSON.stringify(Rating)
       });
       
       if (!response.ok) {
