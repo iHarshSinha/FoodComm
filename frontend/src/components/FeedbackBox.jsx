@@ -60,7 +60,7 @@ const FeedbackBox = ({ submitFeedback }) => {
       setPreviewUrl('')
       setIsOpen(false)
     } catch (error) {
-      toast.error('Failed to submit feedback. Please try again.')
+      toast.error('Failed to submit feedback.')
     }
   }
   
