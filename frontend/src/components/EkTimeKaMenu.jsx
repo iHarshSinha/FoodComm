@@ -68,7 +68,7 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(Rating)
+        body: JSON.stringify({Rating: Rating})
       });
       
       if (!response.ok) {
