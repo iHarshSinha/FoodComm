@@ -54,7 +54,7 @@ const SickMealPage = () => {
       console.log(formattedData);
     
       try {
-        const response = await fetch('/api/sickmeal', {
+        const response = await fetch('/api/user/sick', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
