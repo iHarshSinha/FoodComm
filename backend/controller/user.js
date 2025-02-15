@@ -13,11 +13,13 @@ let validateDateFormat = require("../utils/validateDateFormat");
 let Review = require("../models/review");
 let client = new twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 module.exports.getMenu = async (req, res, next) => {
+    
     // we will see the current date and then get the menu whose start date is before current date and end date is after current date
     // this will be a static method in the Menu model
     let menu = await Menu.getThisWeekMenu();
     // now we will send json response
     console.log(menu);
+    console.log("i am sending data")
     res.json(menu);
 }
 module.exports.sick = async (req, res, next) => {
@@ -55,12 +57,12 @@ module.exports.updateRating = async (req, res, next) => {
     }
     let CurrentMeal = await Meal.findById(mealId).populate("items");
     // now in body we have rating as an array of objects with item id and rating of those individual items
-    let { rating } = req.body;
-    if(!rating){
+    let { Rating } = req.body;
+    if(!Rating){
         return next(new ExpressError("Rating is required", 400));
     }
-    console.log(rating);
-    for (let rate of rating) {
+    console.log(Rating);
+    for (let rate of Rating) {
         console.log("loop");
         // check for valid item id
         if (!mongoose.Types.ObjectId.isValid(rate.itemId)) {
@@ -102,7 +104,7 @@ module.exports.addReview = async (req, res, next) => {
     // we will upload the image to cloudinary
     // we will get the secure url of the image
     // we will save the review with this secure url
-    
+
     let {rating,feedback}=req.body;
     console.log(req.file,"this is req.file");
     let image=req.file.path;
