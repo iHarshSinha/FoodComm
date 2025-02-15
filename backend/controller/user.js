@@ -21,18 +21,19 @@ module.exports.getMenu = async (req, res, next) => {
     res.json(menu);
 }
 module.exports.sick = async (req, res, next) => {
-    // we have name of the user, room number, meal type, start date, end date, others, meals
+    console.log("got request");
+    // we have name of the user, room number, meal type, start date, end date, instructions, meals
     // now we will construct a whatsapp message that we will send to the manager
     // we will send the message to the manager using twilio
-    // first lets check if others field is there or not
-    let { name, room, mealType, startDate, endDate, others, meals } = req.body;
+    // first lets check if instructions field is there or not
+    let { name, room, mealType, startDate, endDate, instructions, meals } = req.body;
     let message = `Name: ${name}\nRoom: ${room}\nMeal Type: ${mealType}\nStart Date: ${startDate}\nEnd Date: ${endDate}\n`;
     message += `Meals:\n`;
     for (let meal of meals) {
         message += `${meal}\n`;
     }
-    if (others) {
-        message += `Others: ${others}\n`;
+    if (instructions) {
+        message += `Instructions: ${instructions}\n`;
     }
     
     console.log(message);
@@ -101,7 +102,9 @@ module.exports.addReview = async (req, res, next) => {
     // we will upload the image to cloudinary
     // we will get the secure url of the image
     // we will save the review with this secure url
+    
     let {rating,feedback}=req.body;
+    console.log(req.file,"this is req.file");
     let image=req.file.path;
     let secureUrl=await cloudinary.uploader.upload(image);
     // date will be current date
