@@ -20,10 +20,11 @@ const submitFeedback = async (feedbackData) => {
 
   if(!response.ok) {
     console.error('Failed to submit feedback!')
+    return false
   }
 
-  const data = await response.json();
-  return data;
+  return true
+
 }
 
 const HomePage = () => {

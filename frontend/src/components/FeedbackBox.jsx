@@ -17,7 +17,7 @@ const FeedbackBox = ({ submitFeedback }) => {
       if (validTypes.includes(file.type)) {
         const reader = new FileReader()
         reader.onloadend = () => {
-          setImage(reader.result)
+          setImage(file)
           setPreviewUrl(URL.createObjectURL(file))
         }
         reader.readAsDataURL(file)
@@ -32,16 +32,26 @@ const FeedbackBox = ({ submitFeedback }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    const feedbackData = {
-      rating: rating,
-      feedback: feedback,
-      file: image
+    // const feedbackData = {
+    //   rating: rating,
+    //   feedback: feedback,
+    //   file: image
+    // }
+
+    const formData = new FormData()
+    formData.append('rating', rating)
+    formData.append('feedback', feedback)
+    if (image) {
+      formData.append('file', image) // Append file instead of Base64
     }
     
     try {
-      await submitFeedback(feedbackData)
+      const result = await submitFeedback(feedbackData)
+      if(!result){
+        toast.error('Failed to submit feedback. Please try again.');
+        return;
+      }
       toast.success('Feedback submitted successfully!')
-      
       // Reset form
       setRating(0)
       setFeedback('')
