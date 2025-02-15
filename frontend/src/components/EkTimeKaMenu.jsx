@@ -59,7 +59,7 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID }) => {
         itemId: itemIDs[index],
         rating: rating,
       }));
-  
+
     console.log("Valid Ratings to Submit:", validRatings);
     
     try {
@@ -76,15 +76,13 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID }) => {
       }
       
       console.log("Ratings submitted successfully");
+      toast.success("Ratings submitted successfully!");
+      setRatings({});
+      setCanRate(false);
     } catch (error) {
       console.error("Error submitting ratings:", error);
     }
-  }  
-    toast.success("Ratings submitted successfully!");
-    setRatings({});
-    setCanRate(false);
-  };
-
+  }
   const getFoodTypeIcon = (itemName) => {
     const nonVegItems = ['chicken', 'egg', 'omlette'];
     const isNonVeg = nonVegItems.some(item => 
