@@ -50,6 +50,7 @@ module.exports.sick = async (req, res, next) => {
     return res.json({message:"Sick Meal Request Sent"});   
 }
 module.exports.updateRating = async (req, res, next) => {
+    console.log(req.body);
     
     let mealId = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(mealId)) {
