@@ -2,6 +2,7 @@ if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 let express = require('express');
+let cors=require("cors")
 let methodOverride=require("method-override")
 let ExpressError = require("./utils/ExpressError")
 let mongoose = require('mongoose');
@@ -11,6 +12,7 @@ let app = express();
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(methodOverride("_method"))
+app.use(cors())
 
 
 
