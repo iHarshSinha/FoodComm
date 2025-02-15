@@ -32,14 +32,14 @@ const FeedbackBox = ({ submitFeedback }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     
-    const today = new Date()
-    const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`
+    // const today = new Date()
+    // const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`
     
     const feedbackData = {
       rating: rating,
       feedback: feedback,
-      submittedAt: formattedDate,
-      image: image
+      // submittedAt: formattedDate,
+      file: image
     }
   
     submitFeedback(feedbackData)
