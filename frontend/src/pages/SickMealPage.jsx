@@ -4,6 +4,20 @@ import 'react-toastify/dist/ReactToastify.css'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext';
+import FeedbackBox from '../components/FeedbackBox'
+
+// submit feedback
+const submitFeedback = async (feedbackData) => {
+  const response = await fetch('/api/user/review', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(feedbackData),
+  })
+
+  return;
+}
 
 const SickMealPage = () => {
   const today = new Date().toISOString().split('T')[0]
@@ -76,6 +90,7 @@ const SickMealPage = () => {
       }
     }
   return (
+    <>
     <form onSubmit={handleSubmit} className="max-w-md mx-auto my-20 p-6 bg-[#FFF8EA] dark:bg-gray-800 rounded-lg shadow-xl">
       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">Sick Meal Request</h2>
       
@@ -220,6 +235,8 @@ const SickMealPage = () => {
         </button>
       </div>
     </form>
+    <FeedbackBox submitFeedback={submitFeedback} />
+    </>
   )
 }
 
