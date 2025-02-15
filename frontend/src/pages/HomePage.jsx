@@ -10,16 +10,13 @@ const getCurrentDayIndex = () => {
 
 // submit feedback
 const submitFeedback = async (feedbackData) => {
+  // check server response
   const response = await fetch('/api/user/review', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(feedbackData),
+    body: feedbackData
   })
 
-  if(!response.ok) {
-    console.error('Failed to submit feedback!')
+  if (!response.ok) {
     return false
   }
 

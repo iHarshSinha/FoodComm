@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import EkDinKaMenu from '../components/EkDinKaMenu'
-import { useTheme } from '../context/ThemeContext'
 
 const MenuPage = () => {
-  const [currentDay, setCurrentDay] = useState(0)
-  const { darkMode } = useTheme();
+  const [currentDay, setCurrentDay] = useState(getCurrentDayIndex())
   
   const handlePrevDay = () => {
     setCurrentDay(prev => Math.max(0, prev - 1))
@@ -12,6 +10,12 @@ const MenuPage = () => {
 
   const handleNextDay = () => {
     setCurrentDay(prev => Math.min(6, prev + 1))
+  }
+
+  const getCurrentDayIndex = () => {
+    const dayIndex = new Date().getDay()
+    // Convert Sunday (0) to 6, and rest days-1 to match our data structure
+    return dayIndex === 0 ? 6 : dayIndex - 1
   }
 
   const getFormattedDate = (dayOffset) => {
