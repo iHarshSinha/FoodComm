@@ -14,7 +14,7 @@ const EkDinKaMenu = ({ day, isHome }) => {
       const response = await fetch(`/api/user/menu`);
       const menu = await response.json();
       console.log("This is menu",menu);
-      const dayMenu = menu[0].days[day].meals;
+      const dayMenu = menu.days[day].meals;
       console.log("This is dayMenu",dayMenu);
       setMenuData(dayMenu);
     } finally {
