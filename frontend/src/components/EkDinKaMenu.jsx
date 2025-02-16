@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import EkTimeKaMenu from './EkTimeKaMenu'
+import {useNavigate} from 'react-router-dom';
 
 const EkDinKaMenu = ({ day, isHome }) => {
   const [menuData, setMenuData] = useState(null);
@@ -8,11 +9,16 @@ const EkDinKaMenu = ({ day, isHome }) => {
   const lunchId = menuData?.[1]?._id;
   const snacksId = menuData?.[2]?._id;
   const dinnerId = menuData?.[3]?._id;
+  const navigation = useNavigate();
 
   const fetchMenu = async () => {
     try {
       const response = await fetch(`/api/user/menu`);
       const menu = await response.json();
+      console.log("This is menu",menu);
+      if(!menu){
+        navigation('/blah');
+      }
       console.log("This is menu",menu);
       const dayMenu = menu.days[day].meals;
       console.log("This is dayMenu",dayMenu);
