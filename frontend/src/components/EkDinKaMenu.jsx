@@ -17,7 +17,7 @@ const EkDinKaMenu = ({ day, isHome }) => {
       const menu = await response.json();
       console.log("This is menu",menu);
       if(!menu){
-        navigation('/blah');
+        navigation('/no-menu-availible');
       }
       console.log("This is menu",menu);
       const dayMenu = menu.days[day].meals;
