@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useTheme } from '../context/ThemeContext'
-import JSConfetti from 'js-confetti'
+// import JSConfetti from 'js-confetti'
 
 // styles for card flip animation
 const flipCardStyles = `
@@ -31,6 +31,7 @@ const flipCardStyles = `
     height: 100%;
     backface-visibility: hidden;
     border-radius: 0.5rem;
+    transition: background-color 0.3s;
   }
   .flip-card-front {
     transform: rotateY(0deg);
@@ -39,6 +40,11 @@ const flipCardStyles = `
   .flip-card-back {
     transform: rotateY(180deg);
   }
+  .flip-card:hover .flip-card-front {
+    background-color: rgba(0, 0, 0, 0.05); // Light hover effect for light mode
+  }
+  .dark .flip-card:hover .flip-card-front {
+    background-color: rgba(255, 255, 255, 0.05); // Subtle hover effect for dark mode
   .flip-card:hover .flip-card-inner {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
@@ -49,53 +55,31 @@ const flipCardStyles = `
 `;
 
 // styles for feast container
-const feastStyles = `
-  .feast-container {
-    background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,255,255,0.2));
-    border: 2px solid gold;
-    box-shadow: 0 0 15px rgba(255,215,0,0.2);
-    position: relative;
-    overflow: hidden;
-  }
-  .feast-container::before {
-    content: '✨';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-  }
-  .feast-container::after {
-    content: '✨';
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    font-size: 20px;
-  }
-`;
+
 
 const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
   const { darkMode } = useTheme();
   const [ratings, setRatings] = useState({});
   const [canRate, setCanRate] = useState(false);
   const [flippedCards, setFlippedCards] = useState({});
-  const jsConfetti = React.useRef(null);
+  // const jsConfetti = React.useRef(null);
 
-  useEffect(() => {
-    if (isFeast) {
-      jsConfetti.current = new JSConfetti();
-    }
-  }, [isFeast]);
+  // useEffect(() => {
+  //   if (isFeast) {
+  //     jsConfetti.current = new JSConfetti();
+  //   }
+  // }, [isFeast]);
 
-  const handleConfetti = () => {
-    if (isFeast && jsConfetti.current) {
-      jsConfetti.current.addConfetti({
-        // 5 food icons
-        emojis: ['🍔', '🍕', '🍟', '🍦', '🍩'],
-        emojiSize: 50,
-        confettiNumber: 100,
-      });
-    }
-  };
+  // const handleConfetti = () => {
+  //   if (isFeast && jsConfetti.current) {
+  //     jsConfetti.current.addConfetti({
+  //       // 5 food icons
+  //       emojis: ['🍔', '🍕', '🍟', '🍦', '🍩'],
+  //       emojiSize: 50,
+  //       confettiNumber: 100,
+  //     });
+  //   }
+  // };
   
   const items = menuData?.items?.map(item => item.name) || [];
   const itemIDs = menuData?.items?.map(item => item._id) || [];
@@ -186,7 +170,7 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
 
   useEffect(() => {
     const styleElement = document.createElement('style');
-    styleElement.textContent = flipCardStyles + feastStyles;
+    styleElement.textContent = flipCardStyles;
     document.head.appendChild(styleElement);
     return () => styleElement.remove();
   }, []);
@@ -195,14 +179,30 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
     return name.replace(/\\/g, '\u200B\\');  // Adds zero-width space before each slash
   };
 
+
   return (
-    <div className={`rounded-lg shadow-md p-6 ${mealColors[meal]} ${isFeast ? 'feast-container' : ''} max-w-2xl mx-auto`}
-    onMouseEnter={handleConfetti}
-    >  
-    
-      <div className="flex items-center justify-between mb-4">
+    <div 
+      className={`
+        rounded-lg p-6 
+        ${mealColors[meal]}
+        ${isFeast ? `
+          relative
+          border-amber-500
+          border-2
+          ` : ''}
+        max-w-2xl mx-auto
+      `}
+    >
+  
+    {isFeast && (
+      <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-200 via-yellow-400 to-orange-400 text-amber-800 px-4 py-2 rounded-full text-sm font-semibold shadow-lg border border-amber-300">
+        ✨ Feast ✨
+      </div>
+    )}
+
+      <div className="flex items-center justify-between mb-4 relative z-10"> 
         <h2 className="text-2xl font-bold capitalize flex items-center gap-2 dark:text-slate-600">
-          {mealIcons[meal]} {meal}  {isFeast && <span className="text-lg">🎉 Special Menu</span>}
+          {mealIcons[meal]} {meal}  
         </h2>
       </div>
 
@@ -211,53 +211,53 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
           {items.length > 0 ? (
             <ul className="space-y-3">
               {items.map((item, index) => (
-      <div
-        key={index}
-        className={`flip-card ${flippedCards[index] ? 'flipped' : ''}`}
-        onClick={() => setFlippedCards(prev => ({...prev, [index]: !prev[index]}))}
-      >
-        <div className="flip-card-inner">
-          <div className="flip-card-front bg-white dark:bg-gray-800 p-4">
-            <div className="flex items-center">
-              <span className="font-medium text-sm sm:text-base dark:text-white flex items-center gap-2 w-full">
-                {getFoodTypeIcon(item)}
-                <span className="break-words">{formatItemName(item)}</span>
-              </span>
-            </div>
-          </div>
-          <div className="flip-card-back bg-white dark:bg-gray-800 p-4">
-            {isHome && canRate ? (
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRating(index, star);
-                      }}
-                      className={`text-xl transition-colors ${
-                        star <= ratings[index] ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'
-                      } hover:scale-110`}
-                    >
-                      ★
-                    </button>
-                  ))}
-                </div>
-                {ratings[index] > 0 && (
-                  <span className="text-sm text-gray-600 dark:text-gray-300">
-                    ({ratings[index]}/5)
-                  </span>
-                )}
-            </div>
-              ) : (
-                <div className="flex items-center justify-center text-gray-600 dark:text-gray-300">
-                  No rating available
-                </div>
-              )}
-            </div>
-          </div>
-      </div>
+                  <div
+                    key={index}
+                    className={`flip-card ${flippedCards[index] ? 'flipped' : ''}`}
+                    onClick={() => setFlippedCards(prev => ({...prev, [index]: !prev[index]}))}
+                  >
+                    <div className="flip-card-inner">
+                      <div className="flip-card-front bg-white dark:bg-gray-800 p-4">
+                        <div className="flex items-center">
+                          <span className="font-medium text-sm sm:text-base dark:text-white flex items-center gap-2 w-full text-left">
+                            {getFoodTypeIcon(item)}
+                            <span className="break-words">{formatItemName(item)}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flip-card-back bg-white dark:bg-gray-800 p-4">
+                        {isHome && canRate ? (
+                          <div className="flex items-center justify-center gap-3">
+                            <div className="flex gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                  key={star}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRating(index, star);
+                                  }}
+                                  className={`text-xl transition-colors ${
+                                    star <= ratings[index] ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'
+                                  } hover:scale-110`}
+                                >
+                                  ★
+                                </button>
+                              ))}
+                            </div>
+                            {ratings[index] > 0 && (
+                              <span className="text-sm text-gray-600 dark:text-gray-300">
+                                ({ratings[index]}/5)
+                              </span>
+                            )}
+                        </div>
+                          ) : (
+                            <div className="flex items-center justify-center text-gray-600 dark:text-gray-300">
+                              No rating available
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                  </div>
               ))}
             </ul>
           ) : (
