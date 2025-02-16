@@ -2,15 +2,25 @@ import React, { useState, useEffect } from 'react'
 import EkTimeKaMenu from './EkTimeKaMenu'
 import {useNavigate} from 'react-router-dom';
 
-const EkDinKaMenu = ({ day, isHome }) => {
+const EkDinKaMenu = ({ day, isHome, date }) => {
   const [menuData, setMenuData] = useState(null);
   const [loading, setLoading] = useState(true); 
-  const breakfastId = menuData?.[0]?._id;
-  const lunchId = menuData?.[1]?._id;
-  const snacksId = menuData?.[2]?._id;
-  const dinnerId = menuData?.[3]?._id;
+  // const breakfastId = menuData?.[0]?._id;
+  // const lunchId = menuData?.[1]?._id;
+  // const snacksId = menuData?.[2]?._id;
+  // const dinnerId = menuData?.[3]?._id;
   const navigation = useNavigate();
+  console.log("Date in EkDinKaMenu: ", date);
+  const getFormattedDate = () => {
+    const date = new Date();
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
 
+  
   const fetchMenu = async () => {
     try {
       const response = await fetch(`/api/user/menu`);
@@ -28,6 +38,26 @@ const EkDinKaMenu = ({ day, isHome }) => {
     }
   }  
 
+  const fetchFeastMenu = async (date, meal) => {
+    try {
+      const queryString = `date=${encodeURIComponent(date)}&meal=${encodeURIComponent(meal.toLowerCase())}`; 
+      console.log("This is query string",queryString);
+      const response = await fetch(`/api/user/feast/${queryString}`);
+      if(!response.ok){
+        throw new Error("Failed to fetch feast menu");
+      }
+      console.log("This is response",response);
+      const feastMenu = await response.json();
+      console.log("This is feastMenu",feastMenu);
+      return feastMenu;
+    } catch(error){
+      console.log("This is error  in fetching feast menu",error);
+    }
+      finally {
+      setLoading(false);
+    }
+  } 
+  
   useEffect(() => {
     fetchMenu()
   }, [day]);
@@ -45,7 +75,66 @@ const EkDinKaMenu = ({ day, isHome }) => {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
-  })
+  });
+
+  const isFeast = menuData.some(meal => meal.isFeast.status === true && meal.isFeast.date === getFormattedDate());
+
+  const breakfastData = () => {
+    if(menuData[0].isFeast.status === true){
+      const feastDate = menuData[0].isFeast.date;
+      const currentDate = getFormattedDate();
+      if(feastDate === currentDate){
+        // fetch from /user/feast
+        return fetchFeastMenu(feastDate, "breakfast");
+      }
+      
+    }
+    else{
+      return menuData[0];
+    }
+  }
+
+  const lunchData = () => {
+    if(menuData[1].isFeast.status === true){
+      const feastDate = menuData[1].isFeast.date;
+      const currentDate = getFormattedDate();
+      if(feastDate === currentDate){
+        // fetch from /user/feast
+        return fetchFeastMenu(feastDate, "lunch");
+      }
+    }
+    else{
+      return menuData[1];
+    }
+  }
+
+  const snacksData = () => {
+    if(menuData[2].isFeast.status === true){
+      const feastDate = menuData[2].isFeast.date;
+      const currentDate = getFormattedDate();
+      if(feastDate === currentDate){
+        // fetch from /user/feast
+        return fetchFeastMenu(feastDate, "snacks");
+      }
+    }
+    else{
+      return menuData[2];
+    }
+  }
+
+  const dinnerData = () => {
+    if(menuData[3].isFeast.status == true){
+      const feastDate = menuData[2].isFeast.date;
+      const currentDate = getFormattedDate();
+      if(feastDate === currentDate){
+        // fetch from /user/feast
+        return fetchFeastMenu(feastDate, "dinner");
+      }
+    }
+    else{
+      return menuData[3];
+    }
+  }
     
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 transition-colors duration-200">
@@ -54,22 +143,22 @@ const EkDinKaMenu = ({ day, isHome }) => {
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
             {isHome ? "Today's Menu" : "Menu"}
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 font-medium">{displayDate}</p>
+          {isHome && <p className="text-gray-600 dark:text-gray-300 font-medium">{displayDate}</p>}
         </div>
 
         <div className="max-w-8xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
-            <div className="transform hover:scale-[1.02] transition-transform">
-              <EkTimeKaMenu meal="breakfast" isHome={isHome} menuData={menuData[0]} mealID={breakfastId} />
+            <div>
+              <EkTimeKaMenu meal="breakfast" isHome={isHome} menuData={breakfastData()} mealID={breakfastData()._id} isFeast={isFeast[0]} />
             </div>
-            <div className="transform hover:scale-[1.02] transition-transform">
-              <EkTimeKaMenu meal="lunch" isHome={isHome} menuData={menuData[1]} mealID={lunchId} />
+            <div>
+              <EkTimeKaMenu meal="lunch" isHome={isHome} menuData={lunchData()} mealID={lunchData()._id} isFeast={isFeast[1]}/>
             </div>
-            <div className="transform hover:scale-[1.02] transition-transform">
-              <EkTimeKaMenu meal="snacks" isHome={isHome} menuData={menuData[2]} mealID={snacksId} />
+            <div>
+              <EkTimeKaMenu meal="snacks" isHome={isHome} menuData={snacksData()} mealID={snacksData()._id} isFeast={isFeast[2]}/>
             </div>
-            <div className="transform hover:scale-[1.02] transition-transform">
-              <EkTimeKaMenu meal="dinner" isHome={isHome} menuData={menuData[3]} mealID={dinnerId} />
+            <div>
+              <EkTimeKaMenu meal="dinner" isHome={isHome} menuData={dinnerData()} mealID={dinnerData()._id} isFeast={isFeast[3]}/>
             </div>
           </div>
         </div>

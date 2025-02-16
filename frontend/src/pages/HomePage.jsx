@@ -24,12 +24,22 @@ const submitFeedback = async (feedbackData) => {
 
 }
 
+// get todays date in format 12 Feb 2025
+const getFormattedDate = () => {
+  const date = new Date()
+  return date.toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  })
+}
+
 const HomePage = () => {
   const currentDayIndex = getCurrentDayIndex();
 
   return (
     <>
-      <EkDinKaMenu day={currentDayIndex} isHome={true} />
+      <EkDinKaMenu day={currentDayIndex} isHome={true} date={getFormattedDate()}/>
       <FeedbackBox submitFeedback={submitFeedback}/>
       
     </>
