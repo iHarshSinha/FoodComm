@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 
 // for user pages
-import { ThemeProvider } from './user/context/ThemeContext'
+import { ThemeProvider } from './context/ThemeContext'
 import UserLayout from './user/layouts/UserLayout'
 import HomePage from './user/pages/HomePage'
 import MenuPage from './user/pages/MenuPage'
