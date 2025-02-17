@@ -44,7 +44,7 @@ const flipCardStyles = `
     background-color: rgba(0, 0, 0, 0.05); // Light hover effect for light mode
   }
   .dark .flip-card:hover .flip-card-front {
-    background-color: rgba(255, 255, 255, 0.05); // Subtle hover effect for dark mode
+    background-color: rgba(0,0,0); // Subtle hover effect for dark mode
   .flip-card:hover .flip-card-inner {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
@@ -214,7 +214,9 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
                   <div
                     key={index}
                     className={`flip-card ${flippedCards[index] ? 'flipped' : ''}`}
-                    onClick={() => setFlippedCards(prev => ({...prev, [index]: !prev[index]}))}
+                    // onClick={() => setFlippedCards(prev => ({...prev, [index]: !prev[index]}))}
+                    onClick={() => isHome && setFlippedCards(prev => ({...prev, [index]: !prev[index]}))}
+                    
                   >
                     <div className="flip-card-inner">
                       <div className="flip-card-front bg-white dark:bg-gray-800 p-4">
