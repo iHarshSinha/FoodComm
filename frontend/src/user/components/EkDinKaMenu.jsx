@@ -11,13 +11,13 @@ const EkDinKaMenu = ({ day, isHome, date }) => {
   // const dinnerId = menuData?.[3]?._id;
   const navigation = useNavigate();
   console.log("Date in EkDinKaMenu: ", date);
-  const getFormattedDate = () => {
-    const date = new Date();
-    return date.toLocaleDateString('en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
+  
+  const getFormattedDate = (inputDate) => {
+    const date = new Date(inputDate);
+    const day = date.getDate();
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day} ${month} ${year}`;
   };
 
   
@@ -42,7 +42,7 @@ const EkDinKaMenu = ({ day, isHome, date }) => {
     try {
       const queryString = `date=${encodeURIComponent(date)}&meal=${encodeURIComponent(meal.toLowerCase())}`; 
       console.log("This is query string",queryString);
-      const response = await fetch(`/api/user/feast/${queryString}`);
+      const response = await fetch(`/api/user/feast?${queryString}`);
       if(!response.ok){
         throw new Error("Failed to fetch feast menu");
       }
@@ -77,12 +77,12 @@ const EkDinKaMenu = ({ day, isHome, date }) => {
     year: 'numeric'
   });
 
-  const isFeast = menuData.some(meal => meal.isFeast.status === true && meal.isFeast.date === getFormattedDate());
+  const isFeast = menuData.some(meal => meal.isFeast.status === true && meal.isFeast.date === getFormattedDate(date));
 
   const breakfastData = () => {
     if(menuData[0].isFeast.status === true){
       const feastDate = menuData[0].isFeast.date;
-      const currentDate = getFormattedDate();
+      const currentDate = getFormattedDate(date);
       if(feastDate === currentDate){
         // fetch from /user/feast
         return fetchFeastMenu(feastDate, "breakfast");
@@ -97,7 +97,7 @@ const EkDinKaMenu = ({ day, isHome, date }) => {
   const lunchData = () => {
     if(menuData[1].isFeast.status === true){
       const feastDate = menuData[1].isFeast.date;
-      const currentDate = getFormattedDate();
+      const currentDate = getFormattedDate(date);
       if(feastDate === currentDate){
         // fetch from /user/feast
         return fetchFeastMenu(feastDate, "lunch");
@@ -111,7 +111,7 @@ const EkDinKaMenu = ({ day, isHome, date }) => {
   const snacksData = () => {
     if(menuData[2].isFeast.status === true){
       const feastDate = menuData[2].isFeast.date;
-      const currentDate = getFormattedDate();
+      const currentDate = getFormattedDate(date);
       if(feastDate === currentDate){
         // fetch from /user/feast
         return fetchFeastMenu(feastDate, "snacks");
@@ -124,8 +124,8 @@ const EkDinKaMenu = ({ day, isHome, date }) => {
 
   const dinnerData = () => {
     if(menuData[3].isFeast.status == true){
-      const feastDate = menuData[2].isFeast.date;
-      const currentDate = getFormattedDate();
+      const feastDate = menuData[3].isFeast.date;
+      const currentDate = getFormattedDate(date);
       if(feastDate === currentDate){
         // fetch from /user/feast
         return fetchFeastMenu(feastDate, "dinner");
