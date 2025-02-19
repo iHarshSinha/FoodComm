@@ -174,6 +174,7 @@ const EkTimeKaMenu = ({ meal, menuData, isFeast=false }) => {
                           <span className="font-medium text-sm sm:text-base dark:text-white flex items-center gap-2 w-full text-left">
                             {getFoodTypeIcon(item)} {getEmoji(itemRatings[index])}
                             <span className={`break-words ${getTextColor(itemRatings[index])}`}>{formatItemName(item)}</span>
+                            
                           </span>
                         </div>
                       </div>

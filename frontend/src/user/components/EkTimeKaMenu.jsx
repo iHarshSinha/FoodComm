@@ -151,7 +151,7 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, isFeast=false }) => {
         },
         body: JSON.stringify({Rating: Rating})
       });
-      
+      console.log(response);
       if (!response.ok) {
         throw new Error('Failed to submit ratings');
       }
