@@ -125,10 +125,18 @@ module.exports.createFeast = async (req, res, next) => {
     if (findFeast) {
         return next(new ExpressError("Feast already exists", 400));
     }
+    // now we have to make items object from the array of strings that we got
+    // we will create items and then save them
+    let itemDocs = await Promise.all(
+        items.map(async itemName => {
+            const item = new Item({ name: itemName });
+            await item.save();
+            return item._id;
+        }));
     let feast = new Feasts({
         name: meal,
         date: date,
-        items: items
+        items: itemDocs
     });
     await feast.save();
     return res.json({ message: "Feast created successfully" });

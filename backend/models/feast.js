@@ -1,5 +1,6 @@
 const { string } = require("joi")
 let mongoose=require("mongoose")
+let Item=require("./item")
 let Schema=mongoose.Schema
 let feastSchema=new Schema({
     name:{
@@ -13,7 +14,8 @@ let feastSchema=new Schema({
     },
     items:[
         {
-            type:String,
+            type:Schema.Types.ObjectId,
+            ref:"Item"
         }
     ]
 })

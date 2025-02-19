@@ -93,7 +93,7 @@ module.exports.getFeast = async (req, res, next) => {
     if(meal!="breakfast" && meal!="lunch" && meal!="snacks" && meal!="dinner"){
         return next(new ExpressError("Invalid meal",400));
     }
-    let feast=await Feast.findOne({date:date,name:meal});
+    let feast=await Feast.findOne({date:date,name:meal}).populate("items");
     if(!feast){
         return next(new ExpressError("No feast found",404));
     }
