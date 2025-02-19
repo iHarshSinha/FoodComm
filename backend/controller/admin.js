@@ -5,13 +5,14 @@ let Item = require("../models/item")
 let ExpressError = require("../utils/ExpressError")
 let Meal = require("../models/meal")
 let Day = require("../models/day")
+let Review = require("../models/review")
 let Menu = require("../models/menu")
 let Feasts = require("../models/feast")
 let multer = require("multer")
 let upload = multer({ storage })
 let yyyymmdd = require("../utils/yyyymmdd")
 
-let validateDateFormat=require("../utils/validateDateFormat")
+let validateDateFormat = require("../utils/validateDateFormat")
 
 module.exports.createMenu = async (req, res, next) => {
 
@@ -92,7 +93,7 @@ module.exports.createFeast = async (req, res, next) => {
         return next(new ExpressError("Date and meal are required", 400));
     }
     // now date must be in the form of dd three letter month and yy
-    if(!validateDateFormat(date)){
+    if (!validateDateFormat(date)) {
         return next(new ExpressError("Invalid date format", 400));
     }
 
@@ -141,5 +142,26 @@ module.exports.createFeast = async (req, res, next) => {
     await feast.save();
     return res.json({ message: "Feast created successfully" });
 }
+module.exports.getReview = async (req, res, next) => {
+    let { page, limit } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 1;
+
+    const totalReviews = await Review.countDocuments(); // Count total records
+    const totalPages = Math.ceil(totalReviews / limit); // Calculate total pages
+
+    const reviews = await Review.find({})
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    res.json({
+        currentPage: page,
+        totalPages: totalPages,
+        totalReviews: totalReviews,
+        reviews: reviews
+    });
+};
+
+
 
 
