@@ -153,6 +153,7 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
       toast.success("Ratings submitted successfully!");
       setRatings({});
       setCanRate(false);
+      setFlippedCards({});
     } catch (error) {
       console.error("Error submitting ratings:", error);
     }
