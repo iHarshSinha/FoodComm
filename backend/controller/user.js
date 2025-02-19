@@ -108,16 +108,27 @@ module.exports.addReview = async (req, res, next) => {
 
     let {rating,feedback}=req.body;
     console.log(req.file,"this is req.file");
-    let image=req.file.path;
-    let secureUrl=await cloudinary.uploader.upload(image);
-    // date will be current date
-    let review=new Review({
-        date:new Date(),
-        rating,
-        feedback,
-        image:secureUrl.secure_url
-    });
-    await review.save();
-    return res.json({message:"Review Added"});
+    if(req.file){
+        let image=req.file.path;
+        let secureUrl=await cloudinary.uploader.upload(image);
+        // date will be current date
+        let review=new Review({
+            date:new Date(),
+            rating,
+            feedback,
+            image:secureUrl.secure_url
+        });
+        await review.save();
+        return res.json({message:"Review Added"});
+    }
+    else{
+        let review=new Review({
+            date:new Date(),
+            rating,
+            feedback
+        }); 
+        await review.save();
+        return res.json({message:"Review Added"});
+    }
 
 }
