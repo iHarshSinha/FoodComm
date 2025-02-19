@@ -179,7 +179,12 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
     return name.replace(/\\/g, '\u200B\\');  // Adds zero-width space before each slash
   };
 
-
+  // Add menuData to the dependency array of useEffect
+  useEffect(() => {
+    // Reset flipped cards whenever menuData changes
+    setFlippedCards({});
+  }, [menuData]);
+  
   return (
     <div 
       className={`

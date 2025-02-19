@@ -126,6 +126,12 @@ const EkTimeKaMenu = ({ meal, menuData, isFeast=false }) => {
     return 'text-gray-500';
   };
 
+  // Add menuData to the dependency array of useEffect
+  useEffect(() => {
+    // Reset flipped cards whenever menuData changes
+    setFlippedCards({});
+  }, [menuData]);
+
   return (
     <div 
       className={`
