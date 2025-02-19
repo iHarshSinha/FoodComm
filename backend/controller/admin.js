@@ -146,6 +146,7 @@ module.exports.getReview = async (req, res, next) => {
     let { page, limit } = req.query;
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 1;
+    console.log("page and limit received",page,limit)
 
     const totalReviews = await Review.countDocuments(); // Count total records
     const totalPages = Math.ceil(totalReviews / limit); // Calculate total pages
