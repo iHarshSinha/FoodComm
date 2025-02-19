@@ -57,7 +57,7 @@ const flipCardStyles = `
 // styles for feast container
 
 
-const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
+const EkTimeKaMenu = ({ meal, isHome, menuData, isFeast=false }) => {
   const { darkMode } = useTheme();
   const [ratings, setRatings] = useState({});
   const [canRate, setCanRate] = useState(false);
@@ -137,7 +137,14 @@ const EkTimeKaMenu = ({ meal, isHome, menuData, mealID, isFeast=false }) => {
     console.log("Valid Ratings to Submit:", Rating);
     
     try {
-      const response = await fetch(`/api/user/rating/${mealID}`, {
+      const API_URL = isFeast 
+      ? `/api/user/feast/rating/${menuData._id}`
+      : `/api/user/rating/${menuData._id}`;
+      console.log("Meal", menuData);
+      console.log("Meal ID", menuData._id);
+      console.log("Sending POST request to:", API_URL);
+
+      const response = await fetch(API_URL, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

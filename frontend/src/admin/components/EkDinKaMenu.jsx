@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import EkTimeKaMenu from './EkTimeKaMenu'
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import EkTimeKaMenu from './EkTimeKaMenu';
+import { useNavigate } from 'react-router-dom';
 
-const EkDinKaMenu = ({ day,  date }) => {
+const EkDinKaMenu = ({ day, date }) => {
   const [menuData, setMenuData] = useState(null);
-  const [loading, setLoading] = useState(true); 
-  // const breakfastId = menuData?.[0]?._id;
-  // const lunchId = menuData?.[1]?._id;
-  // const snacksId = menuData?.[2]?._id;
-  // const dinnerId = menuData?.[3]?._id;
+  const [loading, setLoading] = useState(true);
+  const [mealStates, setMealStates] = useState([null, null, null, null]);
   const navigation = useNavigate();
-  
+
   const getFormattedDate = (inputDate) => {
     const date = new Date(inputDate);
     const day = date.getDate();
@@ -18,127 +15,103 @@ const EkDinKaMenu = ({ day,  date }) => {
     const year = date.getFullYear().toString().slice(-2);
     return `${day} ${month} ${year}`;
   };
-  
-  console.log("Date in EkDinKaMenu: ", getFormattedDate(date));
-  
+
   const fetchMenu = async () => {
     try {
       const response = await fetch(`/api/user/menu`);
       const menu = await response.json();
-      console.log("This is menu",menu);
-      if(!menu){
-        navigation('/no-menu-availible');
+      if (!menu) {
+        navigation('/no-menu-available');
       }
-      console.log("This is menu",menu);
       const dayMenu = menu.days[day].meals;
-      console.log("This is dayMenu",dayMenu);
       setMenuData(dayMenu);
     } finally {
       setLoading(false);
     }
-  }  
+  };
 
   const fetchFeastMenu = async (date, meal) => {
     try {
-      const queryString = `date=${encodeURIComponent(date)}&meal=${encodeURIComponent(meal.toLowerCase())}`; 
-      console.log("This is query string",queryString);
-      const response = await fetch(`/api/user/feast?${queryString}`);
-      if(!response.ok){
+      const queryString = `date=${encodeURIComponent(date)}&meal=${encodeURIComponent(meal.toLowerCase())}`;
+      console.log(queryString);
+      const response = await fetch(`http://localhost:3000/user/feast?${queryString}`);
+      // console.log(response);
+      if (!response.ok) {
         throw new Error("Failed to fetch feast menu");
       }
       const feastMenu = await response.json();
-      // console.log("This is feastMenu",feastMenu);
+      console.log("fetchFeastMenu is returning this: ", feastMenu);
       return feastMenu;
-    } catch(error){
-      console.log("This is error  in fetching feast menu",error);
+    } catch (error) {
+      console.error("Error fetching feast menu:", error);
     }
-      finally {
-      setLoading(false);
-    }
-  } 
-  
+  };
+
   useEffect(() => {
-    fetchMenu()
-  }, [day]);
+    fetchMenu();
+  }, [day, date]);
+
+  const getMealData = async (index) => {
+    if (menuData[index].isFeast.status && menuData[index].isFeast.date === getFormattedDate(date)) {
+      console.log("Fetching Date:", menuData[index].isFeast.date);
+      try {
+        const feast = await fetchFeastMenu(menuData[index].isFeast.date, menuData[index].name);
+        console.log("getMealData is returning this: ", feast);
+        return feast;
+      } catch (error) {
+        console.error("Error in getMealData:", error);
+        return menuData[index]; // Fallback to regular menu if feast fetch fails
+      }
+    }
+    return menuData[index];
+  };
+
+  useEffect(() => {
+    const loadMeals = async () => {
+      if (!loading && menuData) {
+        const meals = await Promise.all([
+          getMealData(0),
+          getMealData(1),
+          getMealData(2),
+          getMealData(3)
+        ]);
+        setMealStates(meals);
+      }
+    };
+    
+    loadMeals();
+  }, [menuData, loading]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent dark:border-blue-400"></div>
       </div>
-    )
+    );
   }
 
-  const displayDate = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  // const getMealData = (index) => {
+  //   if (menuData[index].isFeast.status && menuData[index].isFeast.date === getFormattedDate(date)) {
+  //     console.log("Fetching Date:", menuData[index].isFeast.date);
+  //     const feast = fetchFeastMenu(menuData[index].isFeast.date, menuData[index].name);
+  //     console.log("getMealData is returning this: ", feast);
+  //     return feast;
+  //   }
+  //   else return menuData[index];
+  // };
 
-  const isFeast = menuData.some(meal => meal.isFeast.status === true && meal.isFeast.date === getFormattedDate(date));
 
-  const breakfastData = () => {
-    if(menuData[0].isFeast.status === true){
-      const feastDate = menuData[0].isFeast.date;
-      const currentDate = getFormattedDate(date);
-      if(feastDate === currentDate){
-        // fetch from /user/feast
-        return fetchFeastMenu(feastDate, "breakfast");
-      }
-      
-    }
-    else{
-      return menuData[0];
-    }
-  }
+  // Log what is being passed to EkTimeKaMenu
+  console.log("Breakfast Data:", getMealData(0));
+  console.log("Lunch Data:", getMealData(1));
+  console.log("Snacks Data:", getMealData(2));
+  console.log("Dinner Data:", getMealData(3));
 
-  const lunchData = () => {
-    if(menuData[1].isFeast.status === true){
-      const feastDate = menuData[1].isFeast.date;
-      const currentDate = getFormattedDate(date);
-      if(feastDate === currentDate){
-        // fetch from /user/feast
-        return fetchFeastMenu(feastDate, "lunch");
-      }
-    }
-    else{
-      return menuData[1];
-    }
-  }
+  console.log("Breakfast isFeast:", menuData[0].isFeast.status);
+  console.log("Lunch isFeast:", menuData[1].isFeast.status);
+  console.log("Snacks isFeast:", menuData[2].isFeast.status);
+  console.log("Dinner isFeast:", menuData[3].isFeast.status);
 
-  const snacksData = () => {
-    if(menuData[2].isFeast.status === true){
-      const feastDate = menuData[2].isFeast.date;
-      const currentDate = getFormattedDate(date);
-      if(feastDate === currentDate){
-        // fetch from /user/feast
-        return fetchFeastMenu(feastDate, "snacks");
-      }
-    }
-    else{
-      return menuData[2];
-    }
-  }
-
-  const dinnerData = () => {
-    if(menuData[3].isFeast.status == true){
-      const feastDate = menuData[3].isFeast.date;
-      const currentDate = getFormattedDate(date);
-      console.log("I am in feast for dinner");
-      if(feastDate === currentDate){
-        // fetch from /user/feast
-        const feast = fetchFeastMenu(feastDate, "dinner");
-        return feast;
-      }
-    }
-    else{
-      console.log("I am NOT in feast for dinner");
-      return menuData[3];
-    }
-  }
-
-    
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 transition-colors duration-200">
       <div className="container mx-auto px-4">
@@ -146,32 +119,59 @@ const EkDinKaMenu = ({ day,  date }) => {
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
             Menu
           </h1>
-          {/* {isHome && <p className="text-gray-600 dark:text-gray-300 font-medium">{displayDate}</p>} */}
         </div>
 
-        <div className="max-w-8xl mx-auto">
+        {/* <div className="max-w-8xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
             <div>
-              {console.log("This is breakfast data",breakfastData())}
-              <EkTimeKaMenu meal="breakfast"  menuData={breakfastData()}  isFeast={isFeast[0]} />
+              <EkTimeKaMenu meal="breakfast" menuData={getMealData(0)} isFeast={menuData[0].isFeast.status && menuData[0].isFeast.date === getFormattedDate(date)} />
             </div>
             <div>
-              {console.log("This is lunch data",lunchData())}
-              <EkTimeKaMenu meal="lunch"  menuData={lunchData()}  isFeast={isFeast[1]}/>
+              <EkTimeKaMenu meal="lunch" menuData={getMealData(1)} isFeast={menuData[1].isFeast.status && menuData[1].isFeast.date === getFormattedDate(date)} />
             </div>
             <div>
-              {console.log("This is snacks data",snacksData())}
-              <EkTimeKaMenu meal="snacks"  menuData={snacksData()}  isFeast={isFeast[2]}/>
+              <EkTimeKaMenu meal="snacks" menuData={getMealData(2)} isFeast={menuData[2].isFeast.status && menuData[2].isFeast.date === getFormattedDate(date)} />
             </div>
             <div>
-              {console.log("This is dinner data",dinnerData())}
-              <EkTimeKaMenu meal="dinner"  menuData={dinnerData()}  isFeast={isFeast[3]}/>
+              <EkTimeKaMenu meal="dinner" menuData={getMealData(3)} isFeast={menuData[3].isFeast.status && menuData[3].isFeast.date === getFormattedDate(date)} />
             </div>
+          </div>
+        </div> */}
+        <div className="max-w-8xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
+          <div>
+            <EkTimeKaMenu 
+              meal="breakfast" 
+              menuData={mealStates[0]} 
+              isFeast={menuData[0].isFeast.status && menuData[0].isFeast.date === getFormattedDate(date)} 
+            />
+          </div>
+          <div>
+            <EkTimeKaMenu 
+              meal="lunch" 
+              menuData={mealStates[1]} 
+              isFeast={menuData[1].isFeast.status && menuData[1].isFeast.date === getFormattedDate(date)} 
+            />
+          </div>
+          <div>
+            <EkTimeKaMenu 
+              meal="snacks" 
+              menuData={mealStates[2]} 
+              isFeast={menuData[2].isFeast.status && menuData[2].isFeast.date === getFormattedDate(date)} 
+            />
+          </div>
+          <div>
+            <EkTimeKaMenu 
+              meal="dinner" 
+              menuData={mealStates[3]} 
+              isFeast={menuData[3].isFeast.status && menuData[3].isFeast.date === getFormattedDate(date)} 
+            />
           </div>
         </div>
       </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default EkDinKaMenu
+export default EkDinKaMenu;

@@ -16,6 +16,8 @@ const submitFeedback = async (feedbackData) => {
     body: feedbackData
   })
 
+  console.log(response);
+
   if (!response.ok) {
     return false
   }
