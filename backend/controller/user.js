@@ -132,3 +132,35 @@ module.exports.addReview = async (req, res, next) => {
     }
 
 }
+module.exports.updateFeastRating = async (req, res, next) => {
+    let feastId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(feastId)) {
+        return next(new ExpressError("Invalid Feast Id", 400));
+    }
+    let feast = await Feast.findById(feastId).populate("items");
+    if (!feast) {
+        return next(new ExpressError("Could not find feast", 400));
+    }
+    // now get the rating from the body
+    let { Rating } = req.body;
+    if (!Rating) {
+        return next(new ExpressError("Rating is required", 400));
+    }
+    // now we will update the rating of the feast
+    // now we will iterate over the items and update the rating
+    for (let rate of Rating) {
+        console.log("loop");
+        // check for valid item id
+        if (!mongoose.Types.ObjectId.isValid(rate.itemId)) {
+            return next(new ExpressError("Invalid Item Id", 400));
+        }
+        let item = await feast.getItem(rate.itemId);
+        console.log(item);
+        if (!item) {
+            return next(new ExpressError("Invalid Item Id", 400));
+        }
+        // here we will call  that method which will update the rating and the number of user
+        await item.updateRating(rate.rating);
+        
+    }
+}

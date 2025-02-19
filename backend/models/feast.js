@@ -19,5 +19,9 @@ let feastSchema=new Schema({
         }
     ]
 })
+feastSchema.methods.getItem=function(id){
+    let item = this.items.find(item => item._id.toString() === id.toString());
+    return item ? item : null;
+}
 let Feast=mongoose.model("Feast",feastSchema)
 module.exports=Feast
