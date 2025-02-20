@@ -163,4 +163,5 @@ module.exports.updateFeastRating = async (req, res, next) => {
         await item.updateRating(rate.rating);
         
     }
+    return res.json({ message: "Rating Updated" });
 }
