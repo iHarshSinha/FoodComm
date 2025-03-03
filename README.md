@@ -247,8 +247,7 @@ To run the complete application, you'll need to start both the frontend and back
 - **Analytics dashboard for mess administrators**
 
 ## Contributors
-- [Your Name](https://github.com/your-username)
-- [Your Friend's Name](https://github.com/friends-username)
+- Harsh Sinha
+- Kartikeya Dimri
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
