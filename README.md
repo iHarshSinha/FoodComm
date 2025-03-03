@@ -1,98 +1,254 @@
-Standard Readme
+# Food-e: College Mess Management System
 
-standard-readme compliant
+## Overview
+Food-e is a comprehensive fullstack application designed to streamline and enhance college mess management. This platform bridges the gap between students and mess administrators by providing an intuitive interface for complaint management, menu viewing, feedback submission, and other mess-related activities.
 
-A standard style for README files
+## Features
 
-Your README file is normally the first entry point to your code. It should tell people why they should use your module, how they can install it, and how they can use it. Standardizing how you write your README makes creating and maintaining your READMEs easier. Great documentation takes work!
+### For Students
+- **Complaint Management**: Submit and track mess-related complaints
+- **Menu Display**: View daily and weekly meal plans
+- **Feedback System**: Provide structured meal reviews and suggestions
+- **Sick Meal Requests**: Request special meals when unwell with automated notifications to mess managers via Twilio
+- **Rating System**: Rate meals to help improve food quality
+- **Feast Information**: View upcoming and past feast events
 
-This repository contains:
+### For Administrators
+- **Dashboard**: Comprehensive view of all student activities
+- **Complaint Resolution**: Track and resolve student complaints
+- **Menu Management**: Upload and update mess menus via Excel files
+- **Special Event Creation**: Create and announce feast events
+- **Feedback Analysis**: View and analyze student feedback with pagination
 
-    The specification for how a standard README should look.
-    A link to a linter you can use to keep your README maintained (work in progress).
-    A link to a generator you can use to create standard READMEs.
-    A badge to point to this spec.
-    Examples of standard READMEs - such as this file you are reading.
+## Tech Stack
 
-Standard Readme is designed for open source libraries. Although it’s historically made for Node and npm projects, it also applies to libraries in other languages and package managers.
-Table of Contents
+### Frontend
+- **Framework**: React.js with Vite for fast development
+- **Styling**: Tailwind CSS for responsive design
+- **State Management**: React Context API
 
-    Background
-    Install
-    Usage
-        Generator
-    Badge
-    Example Readmes
-    Related Efforts
-    Maintainers
-    Contributing
-    License
+### Backend
+- **Server**: Express.js
+- **Database**: MongoDB with Mongoose ODM
+- **Validation**: Joi for data validation and schema definition
+- **Cloud Storage**: Cloudinary for storing images and Excel files
+- **Messaging**: Twilio API integration for sick meal notifications
+- **Error Handling**: Custom error handling middleware
 
-Background
+## Project Structure
 
-Standard Readme started with the issue originally posed by @maxogden over at feross/standard in this issue, about whether or not a tool to standardize readmes would be useful. A lot of that discussion ended up in zcei's standard-readme repository. While working on maintaining the IPFS repositories, I needed a way to standardize Readmes across that organization. This specification started as a result of that.
+```
+food-e/
+├── frontend/
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/
+│   │   ├── admin/
+│   │   │   ├── components/
+│   │   │   ├── layouts/
+│   │   │   ├── pages/
+│   │   ├── context/
+│   │   ├── user/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   ├── index.css
+│   │   ├── menuData.json
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── vite.config.js
+├── backend/
+│   ├── node_modules/
+│   ├── cloudinary/
+│   │   ├── index.js
+│   │   ├── uploadMiddleware.js
+│   ├── controller/
+│   │   ├── admin.js
+│   │   ├── user.js
+│   ├── models/
+│   │   ├── day.js
+│   │   ├── feast.js
+│   │   ├── items.js
+│   │   ├── meal.js
+│   │   ├── menu.js
+│   │   ├── review.js
+│   ├── routes/
+│   │   ├── admin.js
+│   │   ├── user.js
+│   ├── seed/
+│   │   ├── daynumber.js
+│   │   ├── formatdate.js
+│   │   ├── index.js
+│   │   ├── seedmenu.json
+│   ├── utils/
+│   │   ├── expressError.js
+│   │   ├── catchAsync.js
+│   │   ├── date.js
+│   │   ├── parseExcel.js
+│   │   ├── validateDateFormat.js
+│   ├── index.js
+│   ├── joiSchema.js
+│   ├── middleware.js
+│   ├── package.json
+```
 
-    Your documentation is complete when someone can use your module without ever having to look at its code. This is very important. This makes it possible for you to separate your module's documented interface from its internal implementation (guts). This is good because it means that you are free to change the module's internals as long as the interface remains the same.
+## Installation and Setup
 
-    Remember: the documentation, not the code, defines what a module does.
+### Prerequisites
+- Node.js (v14 or later)
+- MongoDB
+- Cloudinary account
+- Twilio account
 
-~ Ken Williams, Perl Hackers
+### Frontend Setup
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/food-e.git
+   ```
 
-Writing READMEs is way too hard, and keeping them maintained is difficult. By offloading this process - making writing easier, making editing easier, making it clear whether or not an edit is up to spec or not - you can spend less time worrying about whether or not your initial documentation is good, and spend more time writing and using code.
+2. Navigate to the frontend directory:
+   ```bash
+   cd food-e/frontend
+   ```
 
-By having a standard, users can spend less time searching for the information they want. They can also build tools to gather search terms from descriptions, to automatically run example code, to check licensing, and so on.
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-The goals for this repository are:
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-    A well defined specification. This can be found in the Spec document. It is a constant work in progress; please open issues to discuss changes.
-    An example README. This Readme is fully standard-readme compliant, and there are more examples in the example-readmes folder.
-    A linter that can be used to look at errors in a given Readme. Please refer to the tracking issue.
-    A generator that can be used to quickly scaffold out new READMEs. See generator-standard-readme.
-    A compliant badge for users. See the badge.
+### Backend Setup
+1. Navigate to the project root directory:
+   ```bash
+   cd food-e
+   ```
 
-Install
+2. Install backend dependencies:
+   ```bash
+   cd backend
+   npm install
+   ```
 
-This project uses node and npm. Go check them out if you don't have them locally installed.
+3. Create a `.env` file in the backend directory with the following variables:
+   ```
+   BACKEND_PORT=your_port_number
+   MONGODB_URI=your_mongodb_connection_string
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   CLOUDINARY_KEY=your_cloudinary_key
+   CLOUDINARY_SECRET=your_cloudinary_secret
+   TWILIO_ACCOUNT_SID=your_twilio_account_sid
+   TWILIO_AUTH_TOKEN=your_twilio_auth_token
+   ADMIN_NUMBER=admin_phone_number
+   MANAGER_NUMBER=manager_phone_number
+   ```
 
-$ npm install --global standard-readme-spec
+4. Start the server from the project root directory:
+   ```bash
+   node backend/index.js
+   ```
 
-Usage
+5. (Optional) Seed the database with initial data:
+   ```bash
+   node backend/seed/index.js
+   ```
 
-This is only a documentation package. You can print out spec.md to your console:
+## API Endpoints
 
-$ standard-readme-spec
-# Prints out the standard-readme spec
+### Admin Routes
+```javascript
+// admin.js routes
+router.post("/menu", upload, wrapForError(AdminMethods.createMenu))
+router.post("/feast", wrapForError(AdminMethods.createFeast))
+router.get("/review", wrapForError(AdminMethods.getReview))
+```
 
-Generator
+- `POST /api/admin/menu`: Upload menu data (with Cloudinary file upload)
+- `POST /api/admin/feast`: Create a new feast event
+- `GET /api/admin/review`: View all student feedback with pagination
 
-To use the generator, look at generator-standard-readme. There is a global executable to run the generator in that package, aliased as standard-readme.
-Badge
+### User Routes
+```javascript
+// user.js routes
+router.get("/menu", wrapForError(UserMethods.getMenu))
+router.post("/sick", middleware.validateSickMeal, wrapForError(UserMethods.sick))
+router.put("/rating/:id", wrapForError(UserMethods.updateRating))
+router.put("/feast/rating/:id", wrapForError(UserMethods.updateFeastRating))
+router.get("/feast", wrapForError(UserMethods.getFeast))
+router.post("/review", upload, wrapForError(UserMethods.addReview))
+```
 
-If your README is compliant with Standard-Readme and you're on GitHub, it would be great if you could add the badge. This allows people to link back to this Spec, and helps adoption of the README. The badge is not required.
+- `GET /api/user/menu`: Retrieve current mess menu
+- `POST /api/user/sick`: Request a sick meal (with validation middleware)
+- `PUT /api/user/rating/:id`: Update rating for a specific meal
+- `PUT /api/user/feast/rating/:id`: Update rating for a specific feast
+- `GET /api/user/feast`: Retrieve feast information
+- `POST /api/user/review`: Submit feedback with image upload capability
 
-standard-readme compliant
+## Running the Application
 
-To add in Markdown format, use this code:
+To run the complete application, you'll need to start both the frontend and backend servers:
 
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+1. Start the backend server from the project root:
+   ```bash
+   node backend/index.js
+   ```
 
-Example Readmes
+2. In a separate terminal, start the frontend development server:
+   ```bash
+   cd frontend
+   npm run dev
+   ```
 
-To see how the specification has been applied, see the example-readmes.
-Related Efforts
+3. Access the application in your browser at the URL provided by the Vite development server (typically http://localhost:5173)
 
-    Art of Readme - 💌 Learn the art of writing quality READMEs.
-    open-source-template - A README template to encourage open-source contributions.
+## Key Implementation Details
 
-Maintainers
+### Database Models
+- **Day**: Represents a day in the menu schedule
+- **Feast**: Special meal events information
+- **Items**: Individual food items served
+- **Meal**: Represents breakfast, lunch, dinner, or snacks
+- **Menu**: Weekly or monthly menu structure
+- **Review**: User feedback and ratings
 
-@RichardLitt.
-Contributing
+### Utility Functions
+- **expressError.js**: Custom error handling class
+- **catchAsync.js**: Async/await error wrapper
+- **date.js**: Date manipulation utilities
+- **parseExcel.js**: Excel file parsing for menu uploads
+- **validateDateFormat.js**: Validates date formats in requests
 
-Feel free to dive in! Open an issue or submit PRs.
+### Cloudinary Integration
+- **index.js**: Configuration for Cloudinary connection
+- **uploadMiddleware.js**: Middleware for handling file uploads
 
-Standard Readme follows the Contributor Covenant Code of Conduct.
-Contributors
+### Twilio Integration
+- SMS notifications for sick meal requests sent to food manager
+- Contact numbers for administrators and managers configured in environment variables
 
-This project exists thanks to all the people who contribute.
-License
+### Seed Data
+- **daynumber.js**: Helper for day number calculations
+- **formatdate.js**: Date formatting utilities for seed data
+- **index.js**: Main seeding script
+- **seedmenu.json**: Initial menu data for database seeding
+
+## Future Enhancements
+- **AI-powered meal rating predictions**
+- **Automated complaint resolution tracking**
+- **Mobile application for Android and iOS**
+- **Integration with payment systems for mess fee management**
+- **Analytics dashboard for mess administrators**
+
+## Contributors
+- [Your Name](https://github.com/your-username)
+- [Your Friend's Name](https://github.com/friends-username)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
