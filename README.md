@@ -136,7 +136,7 @@ food-e/
    npm install
    ```
 
-3. Create a `.env` file in the backend directory with the following variables:
+3. Create a `.env` file parallel to the backend directory with the following variables:
    ```
    BACKEND_PORT=your_port_number
    MONGODB_URI=your_mongodb_connection_string
