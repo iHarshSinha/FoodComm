@@ -1,8 +1,4 @@
 {
-  "build": {
-    "backend": "cd backend && npm install"
-  },
-  "start": {
-    "backend": "node backend/index.js"
-  }
+  "build": "cd backend && npm install",
+  "start": "cd backend && node index.js"
 }
